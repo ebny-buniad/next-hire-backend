@@ -41,13 +41,14 @@ const updateProfile = async (req, res) => {
         const updateDoc = {
             $set: updateData
         }
-        const result = await profileCollection.updateOne(query, updateDoc, { upsert: false });
+        const result = await profileCollection.updateOne(query, updateDoc, { upsert: true });
         res.status(200).send({ message: 'profile update successfully', data: result });
     }
     catch (error) {
         res.status(500).send({ message: error.message });
     }
 }
+
 
 
 module.exports = { createProfile, getProfile, updateProfile }

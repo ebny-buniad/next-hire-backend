@@ -1,7 +1,7 @@
 const { getCollections } = require("../config/database");
 
 const createUser = async (req, res) => {
-    const {userCollection} = getCollections();
+    const { userCollection } = getCollections();
     try {
         const userData = req.body;
         const existingUser = await userCollection.findOne({ email: userData.email });
@@ -17,18 +17,16 @@ const createUser = async (req, res) => {
 
 const getUserByEmail = async (req, res) => {
     try {
-        const {userCollection} = getCollections();
-        const  email  = req.query.email;
+        const { userCollection } = getCollections();
+        const email = req.query.email;
         if (!email) {
             return res.status(400).send({ message: 'Email query is required' });
         }
-
         const result = await userCollection.findOne({ email: email });
 
         if (!result) {
             return res.status(404).send({ message: 'Email not found' });
         }
-
         res.status(200).send(result);
     }
     catch (error) {
@@ -36,4 +34,22 @@ const getUserByEmail = async (req, res) => {
     }
 };
 
-module.exports = { createUser, getUserByEmail };
+const updateProfilePic = async (req, res) => {
+    try {
+        const { userCollection } = getCollections();
+        const email = req.query.email;
+        const { photoURL } = req.body;
+        console.log(photoURL);
+        const query = { email: email };
+        const updateDoc = {
+            $set: { photoURL }
+        }
+        const result = await userCollection.updateOne(query, updateDoc, { upsert: true });
+        res.status(200).send({ message: 'profile update successfully', data: result });
+    }
+    catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+}
+
+module.exports = { createUser, getUserByEmail, updateProfilePic };
