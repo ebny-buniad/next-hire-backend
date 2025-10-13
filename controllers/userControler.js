@@ -52,4 +52,21 @@ const updateProfilePic = async (req, res) => {
     }
 }
 
-module.exports = { createUser, getUserByEmail, updateProfilePic };
+// Delete user and user profile
+
+const deleteUserProfile = async (req, res) => {
+    try {
+        const { userCollection, profileCollection } = getCollections();
+        const email = req.query.email;
+        const query = { email: email }
+        const userDelete = await userCollection.deleteOne(query);
+        const profileDelete = await profileCollection.deleteOne(query);
+        const result = { userDelete, profileDelete };
+        res.status(200).send({ message: 'User and profile delete successfull', data: result })
+    }
+    catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+}
+
+module.exports = { createUser, getUserByEmail, updateProfilePic, deleteUserProfile };
