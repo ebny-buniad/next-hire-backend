@@ -16,7 +16,9 @@ const connectDB = async () => {
 
         database = client.db('next-hire');
         userCollection = database.collection('users');
-        profileCollection = database.collection('profiles')
+        profileCollection = database.collection('profiles');
+        subscriptionCollection = database.collection('subscription');
+        planCollection = database.collection('plans');
 
 
 
@@ -27,10 +29,10 @@ const connectDB = async () => {
 }
 
 const getCollections = () => {
-    if (!userCollection || !profileCollection) {
+    if (!userCollection || !profileCollection || !subscriptionCollection || !planCollection) {
         throw new Error('userCollection not initialized. Call connectDB() first')
     }
-    return {userCollection, profileCollection};
+    return { userCollection, profileCollection, subscriptionCollection, planCollection };
 }
 
 

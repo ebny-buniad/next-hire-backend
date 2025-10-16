@@ -1,15 +1,34 @@
 const { getCollections } = require("../config/database");
 
+// Create user when reg.
+
 const createUser = async (req, res) => {
-    const { userCollection } = getCollections();
+    const { userCollection, subscriptionCollection } = getCollections();
     try {
         const userData = req.body;
         const existingUser = await userCollection.findOne({ email: userData.email });
         if (existingUser) {
             return res.status(409).send({ message: 'user already exist' });
         }
-        const result = await userCollection.insertOne(userData);
-        res.status(201).send(result);
+        const userResult = await userCollection.insertOne(userData);
+
+        // create default subscription for new user
+        const subscriptionDoc = {
+            email: userData.email,
+            plan: 'free',
+            price: 0,
+            appliedCount: 0,
+            applyLimit: 5,
+            startDate: new Date(),
+            expireDate: new Date(new Date().setDate(new Date().getDate() + 30)),
+            status: 'active'
+        }
+        const subscriptionResult = await subscriptionCollection.insertOne(subscriptionDoc);
+        res.status(201).send({
+            message: 'User created successfully with default free plan',
+            user: userResult,
+            subscription: subscriptionResult
+        });
     } catch (error) {
         res.status(500).send({ message: error.message });
     }

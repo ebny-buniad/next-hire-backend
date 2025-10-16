@@ -9,6 +9,7 @@ app.use(express.json());
 
 const userRoutes = require('./routes/userRoutes');
 const profileRoutes = require('./routes/profileRoutes');
+const planRoutes = require('./routes/planRoutes');
 
 app.get('/', (req, res) => {
     res.send('Next hire is runnning');
@@ -17,7 +18,8 @@ app.get('/', (req, res) => {
 connectDB();
 
 app.use('/api/users', userRoutes);
-app.use('/api/profiles', profileRoutes)
+app.use('/api/profiles', profileRoutes);
+app.use('/api/plans', planRoutes);
 
 app.listen(port, () => {
     console.log(`Next hire on port ${port}`)
