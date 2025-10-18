@@ -19,11 +19,13 @@ const createPlan = async (req, res) => {
 const getPlan = async (req, res) => {
     try {
         const { planCollection } = getCollections();
-        const result = await planCollection.find({}).toArray();
+        const { role } = req.params;
+        const query = { role };
+        const result = await planCollection.find(query).toArray();
         res.status(200).send({
             message: 'Plans get successfull!',
             data: result
-        });
+        })
     }
     catch (error) {
         res.status(500).send({ message: error.message });

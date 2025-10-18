@@ -15,10 +15,12 @@ const createUser = async (req, res) => {
         // create default subscription for new user
         const subscriptionDoc = {
             email: userData.email,
+            role: userData.role,
             plan: 'free',
             price: 0,
             appliedCount: 0,
             applyLimit: 5,
+            postLimit: 5,
             startDate: new Date(),
             expireDate: new Date(new Date().setDate(new Date().getDate() + 30)),
             status: 'active'

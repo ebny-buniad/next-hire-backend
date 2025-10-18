@@ -3,7 +3,7 @@ const { createPlan, getPlan, deletePlan } = require("../controllers/planControle
 const router = express.Router();
 
 router.post('/', createPlan);
-router.get('/', getPlan);
+router.get('/:role', getPlan);
 router.delete('/:id', deletePlan);
 
 module.exports = router;
