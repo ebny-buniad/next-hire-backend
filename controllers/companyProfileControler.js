@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb");
 const { getCollections } = require("../config/database")
 
 const createCompanyProfile = async (req, res) => {
@@ -25,17 +26,32 @@ const getCompanyProfile = async (req, res) => {
     try {
         const { companyCollection } = getCollections();
         const email = req.query.email;
-        const result = await companyCollection.findOne({email: email});
+        const result = await companyCollection.findOne({ email: email });
         res.status(200).send({
             message: 'company profile get successful',
             data: result
         })
-
     }
     catch (error) {
         res.status(500).send({ message: error.message });
     }
-
 }
 
-module.exports = { createCompanyProfile, getCompanyProfile }
+// Delete company profile
+const deleteCompanyProfile = async (req, res) => {
+    try {
+        const { companyCollection } = getCollections();
+        const email = req.query.email;
+        const query = { email: email }
+        const result = await companyCollection.deleteOne(query);
+        res.status(200).send({
+            message: 'company profile deleted successful',
+            data: result
+        });
+    }
+    catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+}
+
+module.exports = { createCompanyProfile, getCompanyProfile, deleteCompanyProfile }
