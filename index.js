@@ -11,6 +11,7 @@ const userRoutes = require('./routes/userRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const planRoutes = require('./routes/planRoutes');
 const companyProfileRouter = require('./routes/companyProfileRouter');
+const jobRouter = require('./routes/jobRouter');
 
 app.get('/', (req, res) => {
     res.send('Next hire is runnning');
@@ -22,6 +23,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/profiles', profileRoutes);
 app.use('/api/plans', planRoutes);
 app.use('/api/company', companyProfileRouter);
+app.use('/api/jobs', jobRouter);
 
 app.listen(port, () => {
     console.log(`Next hire on port ${port}`)

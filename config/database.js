@@ -20,6 +20,8 @@ const connectDB = async () => {
         subscriptionCollection = database.collection('subscription');
         planCollection = database.collection('plans');
         companyCollection = database.collection('company-profiles');
+        jobCollection = database.collection('jobs');
+
 
 
 
@@ -31,10 +33,13 @@ const connectDB = async () => {
 
 const getCollections = () => {
     if (!userCollection || !profileCollection || !subscriptionCollection
-        || !planCollection || !companyCollection) {
+        || !planCollection || !companyCollection || !jobCollection) {
         throw new Error('userCollection not initialized. Call connectDB() first')
     }
-    return { userCollection, profileCollection, subscriptionCollection, planCollection, companyCollection };
+    return {
+        userCollection, profileCollection, subscriptionCollection, planCollection, companyCollection,
+        jobCollection
+    };
 }
 
 

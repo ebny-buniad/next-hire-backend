@@ -23,19 +23,36 @@ const createCompanyProfile = async (req, res) => {
 
 // Get company profile by email
 const getCompanyProfile = async (req, res) => {
-    try {
-        const { companyCollection } = getCollections();
-        const email = req.query.email;
-        const result = await companyCollection.findOne({ email: email });
-        res.status(200).send({
-            message: 'company profile get successful',
-            data: result
-        })
+  try {
+    const { companyCollection } = getCollections();
+    const { email, field } = req.query;
+    if (!field) {
+      const result = await companyCollection.findOne({ email });
+      return res.status(200).send({
+        message: "Company profile fetched successfully (full)",
+        data: result,
+      });
     }
-    catch (error) {
-        res.status(500).send({ message: error.message });
-    }
-}
+    
+    const fieldsArray = field.split(",").map((f) => f.trim());
+    const projection = {};
+    fieldsArray.forEach((f) => (projection[f] = 1));
+    projection._id = 0;
+
+    const result = await companyCollection.findOne(
+      { email },
+      { projection }
+    );
+
+    res.status(200).send({
+      message: "Company profile fetched successfully (selected fields)",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
 
 // Delete company profile
 const deleteCompanyProfile = async (req, res) => {
@@ -54,4 +71,30 @@ const deleteCompanyProfile = async (req, res) => {
     }
 }
 
-module.exports = { createCompanyProfile, getCompanyProfile, deleteCompanyProfile }
+
+// Update company profile
+const updateCompanyProfile = async (req, res) => {
+    try {
+        const { companyCollection } = getCollections();
+        const updateData = req.body;
+        const email = req.query.email;
+        const query = { email: email };
+        const options = { upsert: true };
+        const updateDoc = {
+            $set: updateData
+        }
+        const result = await companyCollection.updateOne(query, updateDoc, options);
+        res.status(200).send({
+            message: 'company profile deleted successful',
+            data: result
+        });
+    }
+    catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+}
+
+module.exports = {
+    createCompanyProfile, getCompanyProfile, deleteCompanyProfile,
+    updateCompanyProfile, 
+}
