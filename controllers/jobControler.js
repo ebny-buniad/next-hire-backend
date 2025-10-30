@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb");
 const { getCollections } = require("../config/database")
 
 const createJob = async (req, res) => {
@@ -50,5 +51,38 @@ const getAllJobs = async (req, res) => {
     }
 };
 
+const getJobDetails = async (req, res) => {
+    try {
+        const { jobCollection } = getCollections();
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) }
+        const result = await jobCollection.aggregate([
+            {
+                $match: query
+            },
+            {
+                $lookup: {
+                    from: "company-profiles",
+                    localField: "posted_by",
+                    foreignField: "email",
+                    as: "companyInfo",
+                    pipeline: [
+                        {
+                            $project: { companyName: 1, logo: 1, website: 1, _id: 0 }
+                        }
+                    ]
+                }
+            }
+        ]).toArray();
+        const jobDetails = result[0];
+        res.status(200).send({
+            message: "Get specific job successfully",
+            data: jobDetails
+        });
+    }
+    catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+}
 
-module.exports = { createJob, getAllJobs }
+module.exports = { createJob, getAllJobs, getJobDetails }

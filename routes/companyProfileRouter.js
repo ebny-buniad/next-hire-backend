@@ -1,5 +1,5 @@
 const express = require('express');
-const { createCompanyProfile, getCompanyProfile, deleteCompanyProfile, updateCompanyProfile,  } = require('../controllers/companyProfileControler');
+const { createCompanyProfile, getCompanyProfile, deleteCompanyProfile, updateCompanyProfile, } = require('../controllers/companyProfileControler');
 const router = express.Router();
 
 router.post('/', createCompanyProfile);
